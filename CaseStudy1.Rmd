@@ -1,0 +1,153 @@
+---
+title: "CaseStudy"
+author: "Laura Niederlander"
+date: "June 13, 2018"
+output: slides_presentation
+---
+
+```{r}
+#Import data and review first 6 observations of each dataset.
+
+library(tidyverse)
+library(dplyr)
+
+beer = read.csv('c:/NewProject/Beers.csv', header = TRUE, sep = ",")
+str(beer)
+
+breweries = read.csv('C:/NewProject/Breweries.csv', header = TRUE, sep = ",")
+
+head(beer)
+head(breweries)
+
+```
+
+
+```{r pressure}
+#Review imported structure and summary data
+str(beer)
+str(breweries)
+
+summary(breweries)
+```
+
+
+
+
+
+```{r}
+# Count the number of breweries by State
+
+ctbreweries <- breweries %>% 
+count(State)
+
+head(ctbreweries)
+```
+
+
+
+
+```{r}
+#Merge two files together on Brew_ID and Brewery_ID respectfully
+
+#rename_beer <- beer %>% 
+#rename_beer <- rename(x, brewery_ID = brew_ID)
+
+#(Mdf <- merge(beer, breweries))
+Merge_Beer <- merge(beer, breweries, by.x = "Brewery_id", by.y = "Brew_ID", all = TRUE)
+head(Merge_Beer,6)
+tail(Merge_Beer,10)
+str(Merge_Beer)
+
+```
+
+
+
+
+
+```{r}
+#Review merged file and review NAs.
+summary(Merge_Beer)
+
+```
+
+```{r}
+
+# Report the number of NAs
+NABEER <- is.na(Merge_Beer)
+#NABEER == NA
+#sum(NABEER, count = TRUE)
+ct_SUM <- colSums(NABEER)
+ct_SUM
+
+```
+
+
+
+```{r}
+#Remove NAs from dataset to calculate Mean
+
+Final <- na.omit(Merge_Beer)
+grep("NA", Merge_Beer)
+
+#Final <-   mean(Final$IBU)
+
+#str(Final)
+grep("NA", Final)
+
+
+
+
+```
+
+
+
+```{r}
+library(plyr)
+library(ggplot2)
+library(plotly)
+
+#Compute the Median alcohol content ABV and IBU for each state.
+MeanFinal <- aggregate(Final[, 4:5], list(Final$State), mean)
+
+str(MeanFinal)
+
+#PLot a bar chart to compare
+MeanChart <- barplot(MeanFinal$ABV)
+
+
+```
+
+```{r}
+
+library(mosaic)
+
+#Which state has the max ABV beer? Which state has the IBU beer?
+
+max(MeanFinal$ABV)
+max(MeanFinal$IBU)
+
+MaxABV <- filter(MeanFinal, MeanFinal$ABV == 0.065)
+MaxABV
+
+
+MaxIBU <- filter(MeanFinal, MeanFinal$IBU == 57.5)
+MaxIBU
+
+summary(MeanFinal)
+
+
+#Summary stat for the ABV variable
+
+#Summary(ABV)
+```
+```{r}
+#Is there an apparent relationship between the bitternesss or the beer and its alcohol content?
+ # Draw a scatter plot
+
+plot(MeanFinal[,2:3])
+hist(MeanFinal$ABV)
+hist(MeanFinal$IBU)
+
+# 
+
+```
