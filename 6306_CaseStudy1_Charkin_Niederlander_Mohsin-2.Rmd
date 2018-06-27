@@ -1,7 +1,7 @@
 ---
 title: "MSDS6306 Case Study 1"
 author: "Ivan Charkin, Laura Niederlander, Shon Mohsin"
-date: "June 25, 2018"
+date: "June 27, 2018"
 output: html_document
 ---
 
@@ -51,10 +51,10 @@ All NA's are in ABV and IBU columns. We have to be careful with the further anal
 ###4. Compute the median alcohol content and international bitterness unit for each state. Plot a bar chart to compare.
 ```{r}
 ABV<-tapply (merged$ABV, merged$State, median, na.rm = TRUE)
-barplot(ABV, las=2, cex.names=0.7)
+barplot(ABV, las=2, ylab = "ABV", main = "ABV Content by State", cex.names=0.7)
 
 IBU<-tapply (merged$IBU, merged$State, median, na.rm = TRUE)
-barplot(IBU, las=2, cex.names=0.7)
+barplot(IBU, las=2, ylab = "IBU", main = "IBU Content by State", cex.names=0.7)
 ```
 There is much more variation in the Bitterness between states than in alcohol content. 
 
@@ -76,7 +76,7 @@ summary(merged$ABV)
 
 There is statistically significant relationship between these two variables (P<2e-16). Based on the data for every increasing IBU unit we should expect 1.04e-5 increase in alcohol content. 
 ```{r}
-plot(merged$IBU, merged$ABV)
+plot(merged$IBU, merged$ABV, xlab = "IBU",ylab="ABV", main = "ABV to IBU Scatterplot")
 abline(lm(merged$ABV ~ merged$IBU))
 summary (lm(merged$ABV ~ merged$IBU))
 ```
