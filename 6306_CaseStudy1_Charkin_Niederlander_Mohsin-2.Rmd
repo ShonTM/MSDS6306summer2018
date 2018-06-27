@@ -1,7 +1,7 @@
 ---
 title: "MSDS6306 Case Study 1"
 author: "Ivan Charkin, Laura Niederlander, Shon Mohsin"
-date: "June 25, 2018"
+date: "June 27, 2018"
 output: html_document
 ---
 
