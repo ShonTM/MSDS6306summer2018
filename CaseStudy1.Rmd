@@ -2,8 +2,20 @@
 title: "CaseStudy"
 author: "Laura Niederlander"
 date: "June 13, 2018"
-output: slides_presentation
+#output: slides_presentation
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction:
+We are presented with two datasets; beers and breweries data. We are asked to analyze the data to answer the below set of questions.
+* We display the breweries are present in each state.
+* We identify the state with the maximum alcoholic (ABV) beer.
+* We identify the state that has the most bitter (IBU) beer.
+* We  provide a summary statistic for the ABV variable of the dataset.  
+
+Our first step is to load the dataset and provide a summary of the data
 
 ```{r}
 #Import data and review first 6 observations of each dataset.
@@ -11,10 +23,10 @@ output: slides_presentation
 library(tidyverse)
 library(dplyr)
 
-beer = read.csv('c:/NewProject/Beers.csv', header = TRUE, sep = ",")
+beer = read.csv('beers.csv', header = TRUE, sep = ",")
 str(beer)
 
-breweries = read.csv('C:/NewProject/Breweries.csv', header = TRUE, sep = ",")
+breweries = read.csv('breweries.csv', header = TRUE, sep = ",")
 
 head(beer)
 head(breweries)
@@ -31,19 +43,17 @@ summary(breweries)
 ```
 
 
-
+We count the number of breweries present in each state
 
 
 ```{r}
 # Count the number of breweries by State
 
-ctbreweries <- breweries %>% 
-count(State)
-
-head(ctbreweries)
+state <- table(breweries$State)
+state
 ```
 
-
+We merge the beer and brewery files to create a single file. 
 
 
 ```{r}
@@ -62,14 +72,16 @@ str(Merge_Beer)
 
 
 
-
+We review the merged file to see the NAs present in each column. 
 
 ```{r}
 #Review merged file and review NAs.
 summary(Merge_Beer)
+head(Merge_Beer)
 
 ```
 
+We can see that there are 62 NAs in ABV, and 1005 NAs in IBU.
 ```{r}
 
 # Report the number of NAs
@@ -81,7 +93,7 @@ ct_SUM
 
 ```
 
-
+We remove the NAs from the dataset.
 
 ```{r}
 #Remove NAs from dataset to calculate Mean
@@ -117,6 +129,8 @@ MeanChart <- barplot(MeanFinal$ABV)
 
 ```
 
+We gather which state has the maximum ABV and IBU in beer. We can see that DC at 0.065 has the max ABV and West Virginia has the max IBU at 57.5. 
+
 ```{r}
 
 library(mosaic)
@@ -140,6 +154,9 @@ summary(MeanFinal)
 
 #Summary(ABV)
 ```
+
+We now examine if there is a relationship between the bitterness of beer and it's alcohol content. We can reject the null hypothesis that there is no correlation,and conclude there there is a correlation between ABV and IBU (Pearson's correlation test, p-value <0.0001)
+
 ```{r}
 #Is there an apparent relationship between the bitternesss or the beer and its alcohol content?
  # Draw a scatter plot
@@ -147,7 +164,7 @@ summary(MeanFinal)
 plot(MeanFinal[,2:3])
 hist(MeanFinal$ABV)
 hist(MeanFinal$IBU)
-
+cor.test(Final$ABV, Final$IBU)
 # 
 
 ```
