@@ -1,0 +1,83 @@
+---
+title: "MSDS6306 Case Study 1"
+author: "Ivan Charkin, Laura Niederlander, Shon Mohsin"
+date: "June 25, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This case study analyzes two files. One file contains information on breweries and another on beers. The goal is to merge the two files and do analysis of the data. Both output and R code are shown in the discussion below. 
+
+
+###1. How many breweries are present in each state?
+```{r}
+#Load data from Github
+br <- read.csv("https://raw.githubusercontent.com/icharkin/ICharkin_MSDS6306_HW/master/CaseStudy1/Breweries.csv", header=TRUE)
+beers <- read.csv ("https://raw.githubusercontent.com/icharkin/ICharkin_MSDS6306_HW/master/CaseStudy1/Beers.csv", header=TRUE)
+
+brnum<-summary (br$State)
+brnum
+```
+This must be an outdated data set since there are likely much more breweries at the present time.
+
+
+###2. Merge beer data with the breweries data. Print the first 6 observations and the last six observations to check the merged file.
+For convenience with data analysis we renamed several columns in the data sets. 
+
+```{r}
+#Align the names between datasets
+#Only columns common to the two datasets is Brewery ID 
+colnames(beers)[1] <- "Beer_name"
+colnames(br)[1] <- "Brewery_id"
+colnames(br)[2] <- "Brewery_name"
+
+merged <- merge(br, beers)
+head (merged)
+```
+
+The data are successfully merged. 
+
+###3. Report the number of NA's in each column.
+```{r}
+colSums(is.na(merged))
+```
+All NA's are in ABV and IBU columns. We have to be careful with the further analysis of these variables as it is obvious that the data set is incomplete. 
+
+###4. Compute the median alcohol content and international bitterness unit for each state. Plot a bar chart to compare.
+```{r}
+ABV<-tapply (merged$ABV, merged$State, median, na.rm = TRUE)
+barplot(ABV, las=2, cex.names=0.7)
+
+IBU<-tapply (merged$IBU, merged$State, median, na.rm = TRUE)
+barplot(IBU, las=2, cex.names=0.7)
+```
+There is much more variation in the Bitterness between states than in alcohol content. 
+
+###5. Which state has the maximum alcoholic (ABV) beer? Which state has the most bitter (IBU) beer?
+```{r}
+as.character (merged$State [which (merged$ABV==max (merged$ABV, na.rm=TRUE) )]  )
+as.character (merged$State [which (merged$IBU==max (merged$IBU, na.rm=TRUE) )]  )
+```
+Colorado has the beer with the maximum alcohol content. 
+OR has the most bitter beer. 
+
+###6. Summary statistics for the ABV variable.
+```{r}
+summary(merged$ABV)
+```
+
+
+###7. Is there an apparent relationship between the bitterness of the beer and its alcoholic content? Draw a scatter plot.
+
+There is statistically significant relationship between these two variables (P<2e-16). Based on the data for every increasing IBU unit we should expect 1.04e-5 increase in alcohol content. 
+```{r}
+plot(merged$IBU, merged$ABV)
+abline(lm(merged$ABV ~ merged$IBU))
+summary (lm(merged$ABV ~ merged$IBU))
+```
+
